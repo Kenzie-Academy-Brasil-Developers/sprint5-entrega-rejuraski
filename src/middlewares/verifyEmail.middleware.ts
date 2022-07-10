@@ -12,10 +12,20 @@ const verifyEmailMiddleware = async (
   const userRepository = AppDataSource.getRepository(User);
   const user = await userRepository.findOneBy({ email });
 
-  if (user) {
-    return res
-      .status(400)
-      .json({ message: "This email adress ir already being used" });
+  switch (req.method) {
+    case "POST":
+      if (user) {
+        return res
+          .status(400)
+          .json({ message: "This email adress ir already being used" });
+      }
+    case "PATCH":
+      const userId = req.params.id;
+      if (user && userId === user.id) {
+        return res
+          .status(400)
+          .json({ message: "This email adress ir already being used" });
+      }
   }
 
   next();

@@ -18,16 +18,15 @@ const updateUserService = async (
       hashedPassword = await hash(password, 10);
     }
 
-    const user = userRepository.create({
-      age: age ? age : userLoaded.age,
-      email: email ? email : userLoaded.email,
-      name: name ? name : userLoaded.name,
-      password: hashedPassword ? hashedPassword : userLoaded.password,
-    });
+    (userLoaded.age = age ? age : userLoaded.age),
+      (userLoaded.email = email ? email : userLoaded.email),
+      (userLoaded.name = name ? name : userLoaded.name),
+      (userLoaded.password = hashedPassword
+        ? hashedPassword
+        : userLoaded.password),
+      userRepository.update(id, userLoaded);
 
-    await userRepository.save(user);
-
-    return user;
+    return userLoaded;
   } else {
     throw new Error("Usuário não encontrado");
   }
